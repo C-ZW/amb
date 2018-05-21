@@ -6,7 +6,7 @@ function GenerateDate() {
         for (let counter = 0; counter < num; counter++) {
             result.push({
                 user: `${Math.round(Math.random() * userNum)}`,
-                postId: `post_id:${counter}`,
+                postId: `post_id${counter}`,
                 title: `title ${counter}`,
                 content: `This is content ${counter}`,
                 createdTime: new Date(),
@@ -27,7 +27,7 @@ function generateComment() {
         for (let counter = 0; counter < num; counter++) {
             result.push({
                 comment_id: `comment_id:${counter}`,
-                post_id: `post_id:${Math.round(Math.random() * 10)}`,
+                post_id: `post_id${Math.round(Math.random() * 10)}`,
                 content: `this is comment ${counter}`,
                 created_time: new Date(),
                 sequence_number: Math.round(Math.random() * 30)
