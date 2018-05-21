@@ -51,7 +51,7 @@
                 }
 
                 postsContainer.innerHTML = `<div class="row">${content}</div>`;
-                console.log(data)
+                // console.log(data)
             });
 
         fetch('/api/data/post?id=id2')
@@ -59,12 +59,20 @@
                 return res.json();
             })
             .then(data => {
-                console.log(data)
+                // console.log(data)
             })
 
         fetch('/api/data/history?user=1')
             .then(res => {
                 return res.json()
+            })
+            .then(data => {
+                // console.log(data)
+            })
+
+        fetch('/api/data/comments?postId=post_id2')
+            .then(res => {
+                return res.json();
             })
             .then(data => {
                 console.log(data)
