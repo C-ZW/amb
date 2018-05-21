@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const postData = require('./postsData.js');
+const postData = require('./postsData.js').posts;
 
 router.get('/api/data/history', (req, res, next) => {
     const targetPosts = postData.filter(item => {
@@ -9,6 +9,9 @@ router.get('/api/data/history', (req, res, next) => {
 });
 
 function mapToCreatorView(posts) {
+    if (posts === undefined) {
+        return {};
+    }
     return posts.map(post => {
         return {
             title: post.title,

@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const postData = require('./postsData.js');
+const postData = require('./postsData.js').posts;
 
 router.get('/api/data/posts', (req, res, next) => {
     let result = postData;
@@ -17,13 +17,17 @@ router.get('/api/data/posts', (req, res, next) => {
 });
 
 router.get('/api/data/post', (req, res, next) => {
-    const tagetPost = postData.find(item => {
+    const targetPost = postData.find(item => {
         return item.postId === req.query.id;
     });
-    res.send(mapToCommentUserView(tagetPost));
+    res.send(mapToCommentUserView(targetPost));
 });
 
 function mapToCommentUserView(post) {
+    if (post === undefined) {
+        return {}
+    }
+
     return {
         title: post.title,
         content: post.content,
