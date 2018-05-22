@@ -27,7 +27,7 @@ function generateComment() {
 
         for (let counter = 0; counter < num; counter++) {
             result.push({
-                user: `comment user${Math.round(Math.random() * commentUserNum)}`,
+                user: `${Math.round(Math.random() * commentUserNum)}`,
                 comment_id: `comment_id${counter}`,
                 post_id: `post_id${Math.round(Math.random() * 10)}`,
                 content: `this is comment ${counter}`,
