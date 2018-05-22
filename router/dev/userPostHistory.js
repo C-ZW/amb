@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const postData = require('./postsData.js').posts;
 
-router.get('/api/data/history', (req, res, next) => {
+router.get('/api/data/history/posts', (req, res, next) => {
     const targetPosts = postData.filter(item => {
         return item.user === req.query.user;
     });
