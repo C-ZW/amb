@@ -1,5 +1,5 @@
 function GenerateDate() {
-    let userNum = 1;
+    let userNum = 5;
 
     return function (num = 10) {
         let result = [];
@@ -23,10 +23,12 @@ function generateComment() {
 
     return function (num = 10) {
         let result = [];
+        let commentUserNum = 100;
 
         for (let counter = 0; counter < num; counter++) {
             result.push({
-                comment_id: `comment_id:${counter}`,
+                user: `comment user${Math.round(Math.random() * commentUserNum)}`,
+                comment_id: `comment_id${counter}`,
                 post_id: `post_id${Math.round(Math.random() * 10)}`,
                 content: `this is comment ${counter}`,
                 created_time: new Date(),
