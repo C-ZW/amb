@@ -1,12 +1,12 @@
 const router = require('express').Router();
 const comments = require('./postsData').comments;
 
-router.get('/api/data/comments', (req, res) => {
+router.get('/api/data/comment', (req, res) => {
     let result = [];
 
     if (req.query.postId !== undefined) {
         result = comments.filter(item => {
-            return item.post_id === req.query.postId;
+            return item.comment_id === req.query.comment_id;
         });
     }
     res.send(mapToCommonUserView(result));

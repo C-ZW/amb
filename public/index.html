@@ -62,7 +62,7 @@
                 // console.log(data)
             })
 
-        fetch('/api/data/history?user=1')
+        fetch('/api/data/history/posts?user=1')
             .then(res => {
                 return res.json()
             })
@@ -70,14 +70,57 @@
                 // console.log(data)
             })
 
+        fetch('/api/data/history/comments?user=1')
+            .then(res => {
+                return res.json()
+            })
+            .then(data => {
+                // console.log(data)
+            })
+
+
+
         fetch('/api/data/comments?postId=post_id2')
             .then(res => {
                 return res.json();
             })
             .then(data => {
-                console.log(data)
+                // console.log(data)
             })
 
+        // fetch('/register', {
+        //     body: JSON.stringify({
+        //         account: 'account test4',
+        //         password: 'password test'
+        //     }),
+        //     headers: {
+        //         'content-type': 'application/json'
+        //     },
+        //     method: 'POST'
+        // })
+        //     .then(res => {
+        //         return res.json();
+        //     })
+        //     .then(data => {
+        //         // console.log(data)
+        //     })
+
+        fetch('/login', {
+            body: JSON.stringify({
+                account: 'account test4',
+                password: 'password test2'
+            }),
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'POST'
+        })
+            .then(res => {
+                return res.json();
+            })
+            .then(data => {
+                // console.log(data)
+            })
     </script>
 </body>
 

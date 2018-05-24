@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
     let post = sequelize.define('post', {
         post_id: {
             type: DataTypes.UUID,
-            primaryKey: true
+            primaryKey: true,
+            defaultValue: DataTypes.literal('uuid_generate_v4()')
         },
         title: DataTypes.STRING,
         content: DataTypes.STRING,
@@ -12,10 +13,6 @@ module.exports = (sequelize, DataTypes) => {
         dislike: DataTypes.BIGINT,
         popularity: DataTypes.BIGINT
     });
-
-    post.associate = function (models) {
-        
-    };
 
     return post;
 }

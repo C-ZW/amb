@@ -1,16 +1,14 @@
 'use strict'
 module.exports = (sequelize, DataTypes) => {
-    let user = sequelize.define('user', {
+    let user = sequelize.define('users', {
         user_id: {
-            type: DataTypes.STRING,
-            primaryKey: true
+            type: DataTypes.UUID,
+            primaryKey: true,
+            defaultValue: DataTypes.literal('uuid_generate_v4()')
         },
-        passwork: DataTypes.STRING
+        account: DataTypes.STRING,
+        password: DataTypes.STRING
     });
-
-    user.associate = function (models) {
-        
-    };
 
     return user;
 }

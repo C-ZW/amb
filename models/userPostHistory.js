@@ -1,6 +1,6 @@
 'use strict'
 module.exports = (sequelize, DataTypes) => {
-    let userPostHistory = sequelize.define('userPostHistory', {
+    let userPostHistory = sequelize.define('user_post_histories', {
         user_id: {
             type: DataTypes.STRING,
             primaryKey: true
@@ -10,10 +10,6 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         }
     });
-
-    userPostHistory.associate = function (models) {
-        
-    };
 
     return userPostHistory;
 }

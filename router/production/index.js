@@ -1,5 +1,10 @@
 const router = require('express').Router();
+const register = require('./register');
+const login = require('./login');
 
-// todo: implement the production router
+router.use(register);
+router.use(login);
+
+
 
 module.exports = router;

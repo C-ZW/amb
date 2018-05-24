@@ -1,6 +1,6 @@
 'use strict'
 module.exports = (sequelize, DataTypes) => {
-    let userCommentHistory = sequelize.define('userCommentHistory', {
+    let userCommentHistory = sequelize.define('user_comment_histories', {
         user_id: {
             type: DataTypes.STRING,
             primaryKey: true
@@ -10,10 +10,6 @@ module.exports = (sequelize, DataTypes) => {
             primaryKey: true
         }
     });
-
-    userCommentHistory.associate = function (models) {
-        
-    };
 
     return userCommentHistory;
 }
