@@ -11,14 +11,5 @@ module.exports = (sequelize, DataTypes) => {
         }
     });
 
-    categorical.associate = function (models) {
-        // models.categorical.belongsTo(models.post, {
-        //     onDelete: "CASCADE",
-        //     foreignKey: {
-        //         allowNull: false
-        //     }
-        // });
-    };
-
     return categorical;
 }

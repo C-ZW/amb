@@ -1,13 +1,11 @@
 const router = require('express').Router();
-const ENV = process.env.NODE_ENV.trim() || 'dev';
+const register = require('./register');
+const login = require('./login');
+const post = require('./post');
 
-if(ENV === 'dev') {
-    router.use(require('./dev'));
-} else if (ENV === 'production') {
-    router.use(require('./production'));
-} else {
-    
-    throw 'env error';
-}
+router.use(register);
+router.use(login);
+router.use(post);
+
 
 module.exports = router;

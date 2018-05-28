@@ -16,8 +16,14 @@ app.use(express.static(`${__dirname}/public`));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(router);
+app.use((err, req, res, next) => {
+    if(err !== null) {
+        return res.send({success: false, msg: 'error'})
+    }
+    next();
+})
 
-https.createServer(options, app).listen(8000, () => {
+https.createServer(options, app).listen(PORT, () => {
     console.log(`env: ${process.env.NODE_ENV}`);
     console.log(`server start ${PORT}`);
 })
