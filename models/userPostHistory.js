@@ -2,7 +2,7 @@
 module.exports = (sequelize, DataTypes) => {
     let userPostHistory = sequelize.define('user_post_histories', {
         user_id: {
-            type: DataTypes.STRING,
+            type: DataTypes.UUID,
             primaryKey: true
         },
         post_id: {
