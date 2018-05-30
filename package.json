@@ -12,12 +12,14 @@
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.3",
+    "chai": "^4.1.2",
     "express": "^4.16.3",
     "jsonwebtoken": "^8.2.1",
     "moment": "^2.22.1",
     "pg": "^7.4.3",
     "pg-hstore": "^2.3.2",
-    "sequelize": "^4.37.7"
+    "sequelize": "^4.37.7",
+    "uuid": "^3.2.1"
   },
   "devDependencies": {
     "nodemon": "^1.17.4"
