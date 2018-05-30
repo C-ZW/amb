@@ -2,10 +2,12 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 const https = require('https');
+const http = require('http');
 const bodyParser = require('body-parser');
 const router = require('./router');
 const jwt = require('jsonwebtoken');
-const PORT = 8000;
+const HTTPS_PORT = 8001;
+const HTTP_PORT = 8000;
 
 const options = {
     key: fs.readFileSync('./privatekey.pem'),
@@ -23,7 +25,11 @@ app.use((err, req, res, next) => {
     next();
 })
 
-https.createServer(options, app).listen(PORT, () => {
-    console.log(`env: ${process.env.NODE_ENV}`);
-    console.log(`server start ${PORT}`);
-})
+http.createServer(app).listen(HTTP_PORT, () => {
+    console.log(`http server start ${HTTP_PORT}`)
+});
+
+https.createServer(options, app).listen(HTTPS_PORT, () => {
+    // console.log(`env: ${process.env.NODE_ENV}`);
+    console.log(`https server start ${HTTPS_PORT}`);
+});
