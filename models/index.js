@@ -70,5 +70,6 @@ module.exports = {
     UserCommentHistory,
     UserPostHistory,
     Posts,
-    Categorical
+    Categorical,
+    sequelize
 }
