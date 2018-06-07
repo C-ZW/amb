@@ -8,11 +8,9 @@ const UserPostHistory = require('./userPostHistory')(sequelize, Sequelize);
 const UserCommentHistory = require('./userCommentHistory')(sequelize, Sequelize);
 const Posts = require('./post')(sequelize, Sequelize);
 const Comments = require('./comment')(sequelize, Sequelize);
-const Categorical = require('./categorical')(sequelize, Sequelize);
 
 Posts.hasMany(Comments);
 Posts.hasOne(UserPostHistory);
-Posts.hasMany(Categorical);
 
 // Categorical.belongsTo(Posts);
 
@@ -70,6 +68,5 @@ module.exports = {
     UserCommentHistory,
     UserPostHistory,
     Posts,
-    Categorical,
     sequelize
 }
