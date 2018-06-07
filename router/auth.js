@@ -6,7 +6,7 @@ const secretKey = require('../config/config').jwt_secret;
 
 router.use((req, res, next) => {
     let token = req.body.token ||
-        req.param('token') ||
+        req.query.token ||
         req.headers['x-access-token'];
 
     if (token) {

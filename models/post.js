@@ -1,6 +1,6 @@
 'use strict'
 module.exports = (sequelize, DataTypes) => {
-    let post = sequelize.define('post', {
+    let post = sequelize.define('posts', {
         post_id: {
             type: DataTypes.UUID,
             primaryKey: true,
@@ -11,7 +11,8 @@ module.exports = (sequelize, DataTypes) => {
         created_time: DataTypes.DATE,
         like: DataTypes.BIGINT,
         dislike: DataTypes.BIGINT,
-        popularity: DataTypes.BIGINT
+        popularity: DataTypes.BIGINT,
+        signature: DataTypes.TEXT
     });
 
     return post;

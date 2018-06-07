@@ -4,6 +4,7 @@ const hashing = require('../helper/hashing');
 const secret = require('../config/config').secret;
 const Sequelize = require('sequelize');
 const msgHelper = require('../helper/msgHelper');
+const validator = require('validator');
 
 router.post('/register', (req, res) => {
     const data = req.body;
@@ -13,7 +14,7 @@ router.post('/register', (req, res) => {
     }
 
     Users.create({
-        account: data.account,
+        account: validator.escape(data.account),
         password: hashing(data.password, secret)
     })
     .then(() => {
@@ -30,7 +31,7 @@ function isValidAccount(data) {
     const isFullFill = data !== undefined || 
         data.account !== undefined || 
         data.password !== undefined;
-
+    
     return isFullFill;
 }
 
