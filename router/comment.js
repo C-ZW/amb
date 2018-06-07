@@ -4,6 +4,7 @@ const Comments = require('../models').Comments;
 const CommentHistories = require('../models').UserCommentHistory;
 const uuidV4 = require('uuid');
 const hash = require('../helper/hashing');
+const signatureGenerator = require('../helper/signature');
 const salt = require('../config/config').commentSalt;
 const msgHelper = require('../helper/msgHelper');
 
@@ -15,7 +16,7 @@ router.post('/comment', (req, res) => {
 
     let userInfo = req.decoded;
     let query = req.body;
-    let signature = hash(`${userInfo.userId}${query.post_id}${salt}`);
+    let signature = signatureGenerator(userInfo.userId, query.post_id, salt);
     let comment = commentTemplate(req.body, signature);
 
     Comments.create(comment)
@@ -49,7 +50,7 @@ router.put('/comment', (req, res) => {
         raw: true
     })
         .then((data) => {
-            let signature = hash(`${userInfo.userId}${data.post_id}${salt}`);
+            let signature = signatureGenerator(userInfo.userId, data.post_id, salt);
             Comments.update({
                 content: content
             }, {

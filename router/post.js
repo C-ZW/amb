@@ -6,7 +6,7 @@ const UserPostHistory = require('../models').UserPostHistory;
 const uuidV4 = require('uuid');
 const chai = require('chai');
 const validator = require('validator');
-const hash = require('../helper/hashing');
+const signatureGenerator = require('../helper/signature');
 const signatureSalt = require('../config/config').signatrueSalt;
 
 router.post('/post', (req, res) => {
@@ -50,7 +50,7 @@ router.get('/post', (req, res) => {
         res.send(msgHelper(false, 'something wrong'));
         return;
     } else {
-        let userSignature = hash(`${userInfo.userId}${query.post_id}${signatureSalt}`);
+        let userSignature = signatureGenerator(userInfo.userId, query.post_id, signatureSalt);
         
         Posts.findOne({
             where: {
@@ -78,7 +78,6 @@ router.delete('/post', (req, res) => {
     }
 
     let postId = validator.escape(req.query.post_id);
-    let signature = hash(`${userInfo.userId}${postId}${signatureSalt}`);
 
     UserPostHistory.destroy({
         where: {
@@ -107,7 +106,7 @@ router.put('/post', (req, res) => {
     let postId = query.post_id;
     let title = query.title;
     let content = query.content;
-    let signature = hash(`${userInfo.userId}${postId}${signatureSalt}`);
+    let signature = signatureGenerator(userInfo.userId, postId, signatureSalt);
     
     Posts.update(updatePostTemplate(title, content), {
         where: {
@@ -196,7 +195,7 @@ function postTemplate(postId, post, userId) {
         title: validator.escape(post.title),
         content: validator.escape(post.content),
         created_time: validator.toDate(post.created_time),
-        signature: hash(`${userId}${postId}${signatureSalt}`)
+        signature: signatureGenerator(userId, postId, signatureSalt)
     }
 }
 
