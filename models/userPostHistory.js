@@ -8,6 +8,9 @@ module.exports = (sequelize, DataTypes) => {
         post_id: {
             type: DataTypes.UUID,
             primaryKey: true
+        },
+        preference_type: {
+            type: DataTypes.STRING
         }
     });
 
