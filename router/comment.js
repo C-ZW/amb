@@ -36,7 +36,7 @@ router.post('/comment', (req, res) => {
 router.put('/comment', (req, res) => {
     let userInfo = req.decoded;
     let query = req.body;
-    let commentId = query.comment_id;
+    let commentId = query.id;
     let content = query.content;
 
     if(!validator.isUUID(commentId)) {
@@ -79,7 +79,7 @@ router.put('/comment', (req, res) => {
 })
 
 router.delete('/comment', (req, res) => {
-    let commentId = req.query.comment_id;
+    let commentId = req.query.id;
 
     if (commentId === undefined) {
         res.send(msgHelper(false, 'require comment id'));

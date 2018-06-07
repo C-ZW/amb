@@ -7,7 +7,7 @@ const uuidV4 = require('uuid');
 const chai = require('chai');
 const validator = require('validator');
 const signatureGenerator = require('../helper/signature');
-const signatureSalt = require('../config/config').signatrueSalt;
+const signatureSalt = require('../config/config').signatureSalt;
 
 router.post('/post', (req, res) => {
     let data = req.body;
@@ -23,7 +23,7 @@ router.post('/post', (req, res) => {
         res.send(msgHelper(false, 'post require title, created_time'));
         return;
     }
-
+    
     Posts.create(postTemplate(postId, data, req.decoded.userId))
         .then(() => {
             recordHistory(userInfo.userId, postId);
@@ -43,18 +43,18 @@ router.get('/post', (req, res) => {
     let query = req.query;
     let userInfo = req.decoded;
     
-    if (!validator.isUUID(query.post_id, 4)) {
+    if (!validator.isUUID(query.id, 4)) {
         res.send(msgHelper(false, 'post_id format error'));
         return;
     } else if (req.decoded == undefined) {
         res.send(msgHelper(false, 'something wrong'));
         return;
     } else {
-        let userSignature = signatureGenerator(userInfo.userId, query.post_id, signatureSalt);
+        let userSignature = signatureGenerator(userInfo.userId, query.id, signatureSalt);
         
         Posts.findOne({
             where: {
-                post_id: query.post_id
+                post_id: query.id
             }
         })
             .then((data) => {
@@ -72,7 +72,7 @@ router.get('/post', (req, res) => {
 
 router.delete('/post', (req, res) => {
     let userInfo = req.decoded;
-    let postId = req.query.post_id;
+    let postId = req.query.id;
 
     if(postId === undefined) {
         res.send(msgHelper(false, 'require post_id'));
@@ -108,7 +108,7 @@ router.delete('/post', (req, res) => {
 router.put('/post', (req, res) => {
     let userInfo = req.decoded;
     let query = req.body;
-    let postId = query.post_id;
+    let postId = query.id;
     let title = query.title;
     let content = query.content;
     let signature = signatureGenerator(userInfo.userId, postId, signatureSalt);
@@ -199,7 +199,10 @@ function creatorView(post) {
 }
 
 function postTemplate(postId, post, userId) {
-    chai.should().exist(postId, 'post id shoud exist');
+    chai.should().exist(postId, 'postId id shoud exist');
+    chai.should().exist(post, 'post id shoud exist');
+    chai.should().exist(userId, 'userId id shoud exist');
+
     return {
         post_id: postId,
         title: validator.escape(post.title),
