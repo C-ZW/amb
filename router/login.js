@@ -6,6 +6,7 @@ const secret = require('../config/config').secret;
 const msgHelper = require('../helper/msgHelper');
 const jwt = require('jsonwebtoken');
 const jwtScret = require('../config/config').jwt_secret;
+const validator = require('validator');
 
 function createToken(userId) {
     let payload = {
@@ -13,7 +14,7 @@ function createToken(userId) {
     }
 
     let token = jwt.sign(payload, jwtScret, {
-        expiresIn: 600
+        expiresIn: 6000
     });
 
     return token;
@@ -23,7 +24,7 @@ router.post('/login', (req, res) => {
     const data = req.body;
     Users.findOne({
         where: {
-            account: data.account,
+            account: validator.escape(data.account),
             password: hashing(data.password, secret)
         },
         raw: true
@@ -31,8 +32,6 @@ router.post('/login', (req, res) => {
         )
         .then((data) => {
             if(data !== null) {
-                console.log(data);
-
                 res.send({
                     success: true,
                     message: '', 
