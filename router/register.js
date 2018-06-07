@@ -24,6 +24,9 @@ router.post('/register', (req, res) => {
         if(msg.name === 'SequelizeUniqueConstraintError') {
             res.send(msgHelper(false, 'Account already existed.'));
         }
+    })
+    .catch((err) => {
+        res.send(msgHelper(false, err));
     });
 })
 
