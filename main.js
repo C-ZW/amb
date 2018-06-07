@@ -5,7 +5,7 @@ const https = require('https');
 const http = require('http');
 const bodyParser = require('body-parser');
 const router = require('./router');
-const jwt = require('jsonwebtoken');
+const cors = require('cors');
 const HTTPS_PORT = 8001;
 const HTTP_PORT = 8000;
 
@@ -14,6 +14,7 @@ const options = {
     cert: fs.readFileSync('./certificate.pem')
 };
 
+app.use(cors());
 app.use(express.static(`${__dirname}/public`));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
