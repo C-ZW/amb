@@ -3,7 +3,6 @@ const validator = require('validator');
 const Comments = require('../models').Comments;
 const CommentHistories = require('../models').UserCommentHistory;
 const uuidV4 = require('uuid');
-const hash = require('../helper/hashing');
 const signatureGenerator = require('../helper/signature');
 const salt = require('../config/config').commentSalt;
 const msgHelper = require('../helper/msgHelper');
@@ -40,6 +39,11 @@ router.put('/comment', (req, res) => {
     let commentId = query.comment_id;
     let content = query.content;
 
+    if(!validator.isUUID(commentId)) {
+        res.send(msgHelper(false, 'id format error'));
+        return;
+    }
+
     Comments.findOne({
         attributes: [
             'post_id'
@@ -52,7 +56,7 @@ router.put('/comment', (req, res) => {
         .then((data) => {
             let signature = signatureGenerator(userInfo.userId, data.post_id, salt);
             Comments.update({
-                content: content
+                content: validator.escape(content)
             }, {
                     where: {
                         comment_id: commentId,
@@ -75,14 +79,20 @@ router.put('/comment', (req, res) => {
 })
 
 router.delete('/comment', (req, res) => {
-    if (req.query.comment_id === undefined) {
+    let commentId = req.query.comment_id;
+
+    if (commentId === undefined) {
         res.send(msgHelper(false, 'require comment id'));
         return;
     }
 
-    let userInfo = req.decoded;
-    let commentId = validator.escape(req.query.comment_id);
+    if(!validator.isUUID(commentId)) {
+        res.send(msgHelper(false, 'id format error'));
+        return;
+    }
 
+    let userInfo = req.decoded;
+    
     CommentHistories.destroy({
         where: {
             user_id: userInfo.userId,
@@ -148,18 +158,19 @@ function commentTemplate(comment, signature) {
 }
 
 router.get('/comment', (req, res) => {
-    let commentId = req.query.commentIdreq.query;
+    let commentId = req.query.id;
     if (commentId === undefined) {
         res.send({ success: false, msg: 'require comment id' });
         return;
     }
-
+    
     if (!validator.isUUID(commentId, 4)) {
-        res.send({ success: false, msg: 'comment id error' });
+        res.send({ success: false, msg: 'id format error' });
         return;
     }
 
     Comments.findOne({
+        attributes: ['post_id'],
         where: {
             comment_id: commentId
         },

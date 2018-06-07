@@ -72,12 +72,17 @@ router.get('/post', (req, res) => {
 
 router.delete('/post', (req, res) => {
     let userInfo = req.decoded;
-    if(req.query.post_id === undefined) {
+    let postId = req.query.post_id;
+
+    if(postId === undefined) {
         res.send(msgHelper(false, 'require post_id'));
         return;
     }
 
-    let postId = validator.escape(req.query.post_id);
+    if(!validator.isUUID(postId, 4)) {
+        res.send(msgHelper(false, 'id fromat error'));
+        return;
+    }
 
     UserPostHistory.destroy({
         where: {
@@ -107,6 +112,11 @@ router.put('/post', (req, res) => {
     let title = query.title;
     let content = query.content;
     let signature = signatureGenerator(userInfo.userId, postId, signatureSalt);
+
+    if(!validator.isUUID(postId, 4)) {
+        res.send(msgHelper(false, 'id format error'));
+        return;
+    }
     
     Posts.update(updatePostTemplate(title, content), {
         where: {
