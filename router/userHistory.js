@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const sequelize = require('../models').sequelize
 
-router.post('/history', (req, res) => {
+router.get('/history', (req, res) => {
     let userInfo = req.decoded;
 
     if(userInfo === undefined) {

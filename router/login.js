@@ -34,8 +34,7 @@ router.post('/login', (req, res) => {
             if(data !== null) {
                 res.send({
                     success: true,
-                    message: '', 
-                    token: createToken(data.user_id)});
+                    message: createToken(data.user_id)});
 
             } else {
                 res.send(msgHelper(false, 'password error'));
