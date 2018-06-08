@@ -36,7 +36,9 @@ return messaeg object
 
 ### get
 GET /posts
+
 return recently posts
+
 ---
 
 POST /post
@@ -55,10 +57,12 @@ return message object
 
 ---
 GET /post?id='post_id'
+
 return post
 
 ---
 DELETE /post?id='post_id'
+
 return message object
 
 ---
@@ -103,16 +107,19 @@ return message object
 
 ---
 DELETE /comment?id='comment_id'
+
 return message object
 
 ---
 GET /comment?id='comment_id'
+
 return post_id
 
 ---
 
 GET /history
 return message object
+
 msg field with array of post and comment histories 
 
 ```javascript
