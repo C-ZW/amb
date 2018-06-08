@@ -8,6 +8,9 @@ module.exports = (sequelize, DataTypes) => {
         comment_id: {
             type: DataTypes.UUID,
             primaryKey: true
+        },
+        post_id: {
+            type: DataTypes.UUID            
         }
     });
 

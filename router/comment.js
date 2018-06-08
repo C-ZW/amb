@@ -22,14 +22,15 @@ router.post('/comment', (req, res) => {
         .then((data) => {
             recordCommentHistory({
                 comment_id: comment.comment_id,
-                user_id: userInfo.userId
+                user_id: userInfo.userId,
+                post_id: req.body.post_id
             })
         })
         .then((data) => {
             res.send({ success: true, msg: '' });
         })
         .catch((err) => {
-            ses.send({ success: false, msg: err });
+            res.send({ success: false, msg: err });
         })
 });
 
@@ -132,8 +133,8 @@ function deleteComment(commentId) {
 function recordCommentHistory(data) {
     CommentHistories.create({
         comment_id: data.comment_id,
-        user_id: data.user_id
-
+        user_id: data.user_id,
+        post_id: data.post_id
     })
         .catch((err) => {
             throw err;

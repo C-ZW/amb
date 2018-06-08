@@ -8,6 +8,8 @@ const chai = require('chai');
 const validator = require('validator');
 const signatureGenerator = require('../helper/signature');
 const signatureSalt = require('../config/config').signatureSalt;
+const CommentHistories = require('../models').UserCommentHistory;
+const Comments = require('../models').Comments;
 
 router.post('/post', (req, res) => {
     let data = req.body;
@@ -23,7 +25,7 @@ router.post('/post', (req, res) => {
         res.send(msgHelper(false, 'post require title, created_time'));
         return;
     }
-    
+
     Posts.create(postTemplate(postId, data, req.decoded.userId))
         .then(() => {
             recordHistory(userInfo.userId, postId);
@@ -42,7 +44,7 @@ router.post('/post', (req, res) => {
 router.get('/post', (req, res) => {
     let query = req.query;
     let userInfo = req.decoded;
-    
+
     if (!validator.isUUID(query.id, 4)) {
         res.send(msgHelper(false, 'post_id format error'));
         return;
@@ -51,7 +53,7 @@ router.get('/post', (req, res) => {
         return;
     } else {
         let userSignature = signatureGenerator(userInfo.userId, query.id, signatureSalt);
-        
+
         Posts.findOne({
             where: {
                 post_id: query.id
@@ -74,12 +76,12 @@ router.delete('/post', (req, res) => {
     let userInfo = req.decoded;
     let postId = req.query.id;
 
-    if(postId === undefined) {
+    if (postId === undefined) {
         res.send(msgHelper(false, 'require post_id'));
         return;
     }
 
-    if(!validator.isUUID(postId, 4)) {
+    if (!validator.isUUID(postId, 4)) {
         res.send(msgHelper(false, 'id fromat error'));
         return;
     }
@@ -90,19 +92,42 @@ router.delete('/post', (req, res) => {
             post_id: postId
         }
     })
-    .then((data) => {
-        if(data === 0) {
-            throw 'no found';
-        }
-        deletePost(postId);
-        return data;
-    })
-    .then((data) => {
-        res.send(msgHelper(true, data));
-    })
-    .catch((err) => {
-        res.send(msgHelper(false, err));
-    });
+        .then((data) => {
+            if (data === 0) {
+                throw 'no found';
+            }
+
+            CommentHistories.destroy({
+                where: {
+                    post_id: postId
+                }
+            })
+                .then(() => {
+                    Comments.destroy({
+                        where: {
+                            post_id: postId
+                        }
+                    })
+                        .catch((err) => {
+                            console.log(err);
+                        })
+                })
+                .then(() => {
+                    deletePost(postId);
+                })
+                .catch((err) => {
+                    console.log(err);
+                });
+
+
+            return data;
+        })
+        .then((data) => {
+            res.send(msgHelper(true, data));
+        })
+        .catch((err) => {
+            res.send(msgHelper(false, err));
+        });
 });
 
 router.put('/post', (req, res) => {
@@ -113,35 +138,35 @@ router.put('/post', (req, res) => {
     let content = query.content;
     let signature = signatureGenerator(userInfo.userId, postId, signatureSalt);
 
-    if(!validator.isUUID(postId, 4)) {
+    if (!validator.isUUID(postId, 4)) {
         res.send(msgHelper(false, 'id format error'));
         return;
     }
-    
+
     Posts.update(updatePostTemplate(title, content), {
         where: {
             post_id: postId,
             signature: signature
         }
     })
-    .then((data) => {
-        if(data[0] === 0) {
-            throw 'check user id or post id'
-        }
-        res.send(msgHelper(true, ''));
-    })
-    .catch((err) => {
-        res.send(msgHelper(false, err));
-    });
+        .then((data) => {
+            if (data[0] === 0) {
+                throw 'check user id or post id'
+            }
+            res.send(msgHelper(true, ''));
+        })
+        .catch((err) => {
+            res.send(msgHelper(false, err));
+        });
 });
 
 function updatePostTemplate(title, content) {
     let toUpdate = {};
-    if(title !== undefined) {
+    if (title !== undefined) {
         toUpdate.title = validator.escape(title);
     }
-    
-    if(content !== undefined) {
+
+    if (content !== undefined) {
         toUpdate.content = validator.escape(content);
     }
     return toUpdate;
@@ -153,14 +178,14 @@ function deletePost(postId) {
             post_id: postId
         }
     })
-    .then((data) => {
-        if(data === 0) {
-            throw 'err'
-        }
-    })
-    .catch((err) => {
-        console.log(err)
-    });
+        .then((data) => {
+            if (data === 0) {
+                throw 'err'
+            }
+        })
+        .catch((err) => {
+            console.log(err)
+        });
 }
 
 router.get('/posts', (req, res) => {
