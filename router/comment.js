@@ -9,7 +9,8 @@ const msgHelper = require('../helper/msgHelper');
 
 router.post('/comment', (req, res) => {
     if (!isValidComment(req.body)) {
-        res.send({ success: false, msg: 'comment format error' });
+const msgHelper = require('../helper/msgHelper');
+        res.send(msgHelper(false, 'comment format error'));
         return;
     }
 
@@ -27,10 +28,10 @@ router.post('/comment', (req, res) => {
             })
         })
         .then((data) => {
-            res.send({ success: true, msg: '' });
+            res.send(msgHelper(true, ''));
         })
         .catch((err) => {
-            res.send({ success: false, msg: err });
+            res.send(msgHelper(false, err));
         })
 });
 
@@ -66,9 +67,9 @@ router.put('/comment', (req, res) => {
                 })
                 .then((d) => {
                     if (d[0] === 0) {
-                        res.send({ success: false, msg: 'check comment_id or user id' })
+                        res.send(msgHelper(false, 'check comment_id or user id'))
                     }
-                    res.send({ success: true, msg: data })
+                    res.send(msgHelper(true, data))
                 })
                 .catch((err) => {
                     throw err
@@ -161,12 +162,12 @@ function commentTemplate(comment, signature) {
 router.get('/comment', (req, res) => {
     let commentId = req.query.id;
     if (commentId === undefined) {
-        res.send({ success: false, msg: 'require comment id' });
+        res.send(msgHelper(false, 'require comment id'));
         return;
     }
     
     if (!validator.isUUID(commentId, 4)) {
-        res.send({ success: false, msg: 'id format error' });
+        res.send(msgHelper(false, 'id format error'));
         return;
     }
 
@@ -178,10 +179,10 @@ router.get('/comment', (req, res) => {
         raw: true
     })
         .then((data) => {
-            res.send({ success: true, msg: data })
+            res.send(msgHelper(true, data))
         })
         .catch((err) => {
-            res.send({ success: false, msg: err });
+            res.send(msgHelper(false, err));
         });
 });
 

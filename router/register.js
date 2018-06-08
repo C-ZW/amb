@@ -18,7 +18,7 @@ router.post('/register', (req, res) => {
         password: hashing(data.password, secret)
     })
     .then(() => {
-        res.send({success: true, meaasge: ''});
+        res.send(msgHelper(true, ''));
     })
     .catch(Sequelize.ValidationError, function (msg) {
         if(msg.name === 'SequelizeUniqueConstraintError') {

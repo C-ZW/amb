@@ -1,11 +1,12 @@
 const router = require('express').Router();
-const sequelize = require('../models').sequelize
+const sequelize = require('../models').sequelize;
+const msgHelper = require('../helper/msgHelper');
 
 router.get('/history', (req, res) => {
     let userInfo = req.decoded;
 
     if(userInfo === undefined) {
-        res.send({success: false, msg: 'something wrong'});
+        res.send(msgHelper(false, 'something wrong'));
         return;
     }
     
@@ -18,11 +19,11 @@ router.get('/history', (req, res) => {
         raw: true
     })
         .then((data) => {
-            res.send({ success: true, msg: data[0] })
+            res.send(msgHelper(true, data[0]))
         })
         .catch((err) => {
             console.log(err)
-            res.send({ success: false, msg: err })
+            res.send(msgHelper(false, err))
         });
 });
 

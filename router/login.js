@@ -22,6 +22,7 @@ function createToken(userId) {
 
 router.post('/login', (req, res) => {
     const data = req.body;
+    console.log(data)
     Users.findOne({
         where: {
             account: validator.escape(data.account),
@@ -32,9 +33,7 @@ router.post('/login', (req, res) => {
         )
         .then((data) => {
             if(data !== null) {
-                res.send({
-                    success: true,
-                    message: createToken(data.user_id)});
+                res.send(msgHelper(true, createToken(data.user_id)));
 
             } else {
                 res.send(msgHelper(false, 'password error'));
