@@ -41,6 +41,31 @@ router.post('/post', (req, res) => {
         });
 });
 
+let popularityCounter = [];
+
+function updatePostPopularity() {
+    for(let i in popularityCounter) {
+        Posts.update({
+            popularity: Sequelize.literal('popularity + ' + popularityCounter[i])
+        } ,{
+            where: {
+                post_id: i
+            }
+        })
+        .then((data) => {
+            counter = 0;
+            popularityCounter = [];
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+    }
+}
+
+setInterval(() => {
+    updatePostPopularity();
+}, 5000)
+
 router.get('/post', (req, res) => {
     let query = req.query;
     let userInfo = req.decoded;
@@ -60,6 +85,11 @@ router.get('/post', (req, res) => {
             }
         })
             .then((data) => {
+                if(popularityCounter[query.id] === undefined) {
+                    popularityCounter[query.id] = 0;
+                }
+                popularityCounter[query.id]++;
+
                 if (data.signature === userSignature) {
                     res.send(creatorView(data));
                 } else {
