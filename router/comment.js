@@ -7,9 +7,30 @@ const signatureGenerator = require('../helper/signature');
 const salt = require('../config/config').commentSalt;
 const msgHelper = require('../helper/msgHelper');
 
+router.get('/comments', (req, res) => {
+    let query = req.query;
+    if(!validator.isUUID(query.post_id)) {
+        res.send(msgHelper(false, 'wrong post id'));
+    }
+
+    Comments.findAll({
+        attributes: ['comment_id', 'content', 'created_time', 'signature'],
+        order: [['created_time', 'DESC']],
+        where: {
+            post_id: query.post_id
+        }
+    })
+    .then((data) => {
+        res.send(msgHelper(true, data));
+    })
+    .catch((err) => {
+        res.send(msgHelper(false, err));
+    })
+});
+
 router.post('/comment', (req, res) => {
     if (!isValidComment(req.body)) {
-const msgHelper = require('../helper/msgHelper');
+        const msgHelper = require('../helper/msgHelper');
         res.send(msgHelper(false, 'comment format error'));
         return;
     }
@@ -94,7 +115,7 @@ router.delete('/comment', (req, res) => {
     }
 
     let userInfo = req.decoded;
-    
+
     CommentHistories.destroy({
         where: {
             user_id: userInfo.userId,
@@ -165,7 +186,7 @@ router.get('/comment', (req, res) => {
         res.send(msgHelper(false, 'require comment id'));
         return;
     }
-    
+
     if (!validator.isUUID(commentId, 4)) {
         res.send(msgHelper(false, 'id format error'));
         return;
