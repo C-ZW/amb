@@ -18,7 +18,7 @@
 <body>
     <center>
         <h1>Anonymous Message Board
-            <span class="badge badge-secondary">New</span>
+            <span class="badge badge-secondary">Dev</span>
         </h1>
     </center>
     <br/>
@@ -33,93 +33,47 @@
         const mainContainer = document.getElementById('main_container');
         const postsContainer = document.getElementById('posts_container');
 
-        fetch('/api/data/posts?page=2')
+        fetch('/login', {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                account: 'account1',
+                password: 'password'
+            })
+        })
             .then((res) => {
                 return res.json()
             })
             .then((data) => {
-                let content = '';
+                fetch('/posts', {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'x-access-token': data.msg
+                    },
+                    method: 'GET'
+                })
+                    .then((res) => {
+                        return res.json()
+                    })
+                    .then((posts) => {
+                        console.log(posts)
+                        let content = '';
 
-                for (let i in data) {
-                    content += `<div class="card text-white bg-dark mb-3 animated fadeIn" style="max-width: 18rem; margin-left: 5px;">
-                        <div class="card-header">${data[i].title}</div>
+                        for (let i in posts) {
+                            content += `<div class="card text-white bg-dark mb-3 animated fadeIn" style="max-width: 18rem; margin-left: 5px;">
+                        <div class="card-header">${posts[i].title}</div>
                         <div class="card-body">
-                            <h5 class="card-title">Dark card title</h5>
-                            <p class="card-text">${data[i].content}</p>
+                            <h5 class="card-title">${posts[i].content}</h5>
+                            <p class="card-text">${posts[i].created_time.substring(0, 10)}</p>
                     </div>
                     </div>`
-                }
-
-                postsContainer.innerHTML = `<div class="row">${content}</div>`;
-                // console.log(data)
-            });
-
-        fetch('/api/data/post?id=id2')
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                // console.log(data)
-            })
-
-        fetch('/api/data/history/posts?user=1')
-            .then(res => {
-                return res.json()
-            })
-            .then(data => {
-                // console.log(data)
-            })
-
-        fetch('/api/data/history/comments?user=1')
-            .then(res => {
-                return res.json()
-            })
-            .then(data => {
-                // console.log(data)
-            })
-
-
-
-        fetch('/api/data/comments?postId=post_id2')
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                // console.log(data)
-            })
-
-        // fetch('/register', {
-        //     body: JSON.stringify({
-        //         account: 'account test4',
-        //         password: 'password test'
-        //     }),
-        //     headers: {
-        //         'content-type': 'application/json'
-        //     },
-        //     method: 'POST'
-        // })
-        //     .then(res => {
-        //         return res.json();
-        //     })
-        //     .then(data => {
-        //         // console.log(data)
-        //     })
-
-        fetch('/login', {
-            body: JSON.stringify({
-                account: 'account test4',
-                password: 'password test2'
-            }),
-            headers: {
-                'content-type': 'application/json'
-            },
-            method: 'POST'
-        })
-            .then(res => {
-                return res.json();
-            })
-            .then(data => {
-                // console.log(data)
+                        }
+                        postsContainer.innerHTML = `<div class="row">${content}</div>`;
+                    });
             })
     </script>
 </body>
