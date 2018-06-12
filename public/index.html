@@ -52,19 +52,12 @@
             })
             .then((data) => {
                 fetch('/posts', {
-<<<<<<< HEAD
-                    method: 'GET',
-                    headers: {
-                        'x-access-token': data.msg
-                    }
-=======
                     headers: {
                         'Accept': 'application/json',
                         'Content-Type': 'application/json',
                         'x-access-token': data.msg
                     },
                     method: 'GET'
->>>>>>> c5c291c6ddfff44cad85f8249f0d966ff5fb1b6c
                 })
                     .then((res) => {
                         return res.json()
@@ -84,13 +77,9 @@
                         }
                         postsContainer.innerHTML = `<div class="row">${content}</div>`;
                     });
-<<<<<<< HEAD
             });
 
             
-=======
-            })
->>>>>>> c5c291c6ddfff44cad85f8249f0d966ff5fb1b6c
     </script>
 </body>
 
