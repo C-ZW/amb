@@ -10,10 +10,10 @@ const signatureGenerator = require('../helper/signature');
 const signatureSalt = require('../config/config').signatureSalt;
 const CommentHistories = require('../models').UserCommentHistory;
 const Comments = require('../models').Comments;
+const db = require('../helper/db');
 
-router.post('/post', (req, res) => {
+router.post('/post', async (req, res) => {
     let data = req.body;
-    let userInfo = req.decoded;
     let postId = uuidV4();
 
     if (req.decoded === undefined) {
@@ -26,39 +26,32 @@ router.post('/post', (req, res) => {
         return;
     }
 
-    Posts.create(postTemplate(postId, data, req.decoded.userId))
-        .then(() => {
-            recordHistory(userInfo.userId, postId);
-        })
-        .then(() => {
-            res.send(msgHelper(true));
-        })
-        .catch(Sequelize.ValidationError, (err) => {
-            res.send(msgHelper(false, err));
-        })
-        .catch((err) => {
-            res.send(msgHelper(false, err));
-        });
+    try {
+        let result = await db.createPost(postId, data, req.decoded.userId);
+        res.send(msgHelper(true, result));
+    } catch (err) {
+        res.send(msgHelper(false, 'error: ' + err));
+    }
 });
 
 let popularityCounter = [];
 
 function updatePostPopularity() {
-    for(let i in popularityCounter) {
+    for (let i in popularityCounter) {
         Posts.update({
             popularity: Sequelize.literal('popularity + ' + popularityCounter[i])
-        } ,{
-            where: {
-                post_id: i
-            }
-        })
-        .then((data) => {
-            counter = 0;
-            popularityCounter = [];
-        })
-        .catch((err) => {
-            console.log(err);
-        })
+        }, {
+                where: {
+                    post_id: i
+                }
+            })
+            .then((data) => {
+                counter = 0;
+                popularityCounter = [];
+            })
+            .catch((err) => {
+                console.log(err);
+            })
     }
 }
 
@@ -66,9 +59,8 @@ setInterval(() => {
     updatePostPopularity();
 }, 5000)
 
-router.get('/post', (req, res) => {
+router.get('/post', async (req, res) => {
     let query = req.query;
-    let userInfo = req.decoded;
 
     if (!validator.isUUID(query.id, 4)) {
         res.send(msgHelper(false, 'post_id format error'));
@@ -77,28 +69,16 @@ router.get('/post', (req, res) => {
         res.send(msgHelper(false, 'something wrong'));
         return;
     } else {
-        let userSignature = signatureGenerator(userInfo.userId, query.id, signatureSalt);
-
-        Posts.findOne({
-            where: {
-                post_id: query.id
+        try {
+            let result = await db.getPost(req.decoded.userId, query.id);
+            if (popularityCounter[id] === undefined) {
+                popularityCounter[id] = 0;
             }
-        })
-            .then((data) => {
-                if(popularityCounter[query.id] === undefined) {
-                    popularityCounter[query.id] = 0;
-                }
-                popularityCounter[query.id]++;
-
-                if (data.signature === userSignature) {
-                    res.send(creatorView(data));
-                } else {
-                    res.send(commonUserView(data))
-                }
-            })
-            .catch((err) => {
-                res.send(err);
-            });
+            popularityCounter[id]++;
+            res.send(msgHelper(true, result));
+        } catch (err) {
+            res.send(msgHelper(false, err));
+        }
     }
 });
 
@@ -218,54 +198,14 @@ function deletePost(postId) {
         });
 }
 
-router.get('/posts', (req, res) => {
-    Posts.findAll({
-        limit: 100,
-        order: [['created_time', 'DESC']],
-        raw: true
-    })
-        .then((posts) => {
-            res.send(posts.map(post => commonUserView(post)));
-        })
-        .catch((err) => {
-            res.send(msgHelper(false, err));
-        });
+router.get('/posts', async (req, res) => {
+    try {
+        let result = await db.getPosts()
+        res.send(result)
+    } catch (err) {
+        res.send(false, 'get post err: ' + err);
+    }
 });
-
-function commonUserView(post) {
-    return {
-        post_id: post.post_id,
-        title: validator.unescape(post.title),
-        content: validator.unescape(post.content),
-        created_time: post.created_time
-    }
-}
-
-function creatorView(post) {
-    return {
-        post_id: post.post_id,
-        title: validator.unescape(post.title),
-        content: validator.unescape(post.content),
-        created_time: post.created_time,
-        like: post.like,
-        dislike: post.dislike,
-        popularity: post.popularity
-    }
-}
-
-function postTemplate(postId, post, userId) {
-    chai.should().exist(postId, 'postId id shoud exist');
-    chai.should().exist(post, 'post id shoud exist');
-    chai.should().exist(userId, 'userId id shoud exist');
-
-    return {
-        post_id: postId,
-        title: validator.escape(post.title),
-        content: validator.escape(post.content),
-        created_time: validator.toDate(post.created_time),
-        signature: signatureGenerator(userId, postId, signatureSalt)
-    }
-}
 
 function createPostCheck(post) {
     let isEmpty = post.title === undefined ||
@@ -273,23 +213,6 @@ function createPostCheck(post) {
         validator.toDate(post.created_time) === null;
 
     return isEmpty;
-}
-
-function recordHistory(userId, postId) {
-    chai.should().exist(userId, 'user id shoud exist');
-    chai.should().exist(postId, 'post id shoud exist');
-
-    UserPostHistory.create({
-        user_id: userId,
-        post_id: postId,
-        preference_type: 'creator'
-    })
-        .then(() => {
-            console.log('post history success record');
-        })
-        .catch((err) => {
-            console.log(err);
-        })
 }
 
 module.exports = router;
