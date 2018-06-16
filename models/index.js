@@ -9,11 +9,13 @@ const UserCommentHistory = require('./userCommentHistory')(sequelize, Sequelize)
 const Posts = require('./post')(sequelize, Sequelize);
 const Comments = require('./comment')(sequelize, Sequelize);
 
-Posts.hasMany(Comments);
-Posts.hasOne(UserPostHistory);
-Comments.hasOne(UserCommentHistory);
-Users.hasMany(UserPostHistory);
-Users.hasMany(UserCommentHistory);
+Posts.hasMany(Comments, {foreignKey: 'post_id'});
+Posts.hasOne(UserPostHistory, { foreignKey: 'post_id' });
+UserPostHistory.belongsTo(Posts, {foreignKey: 'post_id'})
+Comments.hasOne(UserCommentHistory, { foreignKey: 'comment_id' });
+UserCommentHistory.belongsTo(Comments, { foreignKey: 'comment_id' });
+Users.hasMany(UserPostHistory, {foreignKey: 'user_id'});
+Users.hasMany(UserCommentHistory, {foreignKey: 'user_id'});
 
 module.exports = {
     Users,

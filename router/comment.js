@@ -34,12 +34,12 @@ router.post('/comment', (req, res) => {
         res.send(msgHelper(false, 'comment format error'));
         return;
     }
-
+    
     let userInfo = req.decoded;
     let query = req.body;
     let signature = signatureGenerator(userInfo.userId, query.post_id, salt);
     let comment = commentTemplate(req.body, signature);
-
+    
     Comments.create(comment)
         .then((data) => {
             recordCommentHistory({
@@ -52,7 +52,7 @@ router.post('/comment', (req, res) => {
             res.send(msgHelper(true, ''));
         })
         .catch((err) => {
-            res.send(msgHelper(false, err));
+            res.send(msgHelper(false, 'err: ' + err));
         })
 });
 
