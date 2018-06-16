@@ -2,15 +2,10 @@ const router = require('express').Router();
 const Posts = require('../models').Posts;
 const msgHelper = require('../helper/msgHelper');
 const Sequelize = require('sequelize');
-const UserPostHistory = require('../models').UserPostHistory;
 const uuidV4 = require('uuid');
-const chai = require('chai');
 const validator = require('validator');
 const signatureGenerator = require('../helper/signature');
 const signatureSalt = require('../config/config').signatureSalt;
-const CommentHistories = require('../models').UserCommentHistory;
-const Comments = require('../models').Comments;
-const db = require('../helper/db');
 
 router.post('/post', async (req, res) => {
     let data = req.body;
@@ -27,10 +22,10 @@ router.post('/post', async (req, res) => {
     }
 
     try {
-        let result = await db.createPost(postId, data, req.decoded.userId);
+        let result = await req.db.createPost(postId, data, req.decoded.userId);
         res.send(msgHelper(true, result));
     } catch (err) {
-        res.send(msgHelper(false, 'error: ' + err));
+        res.send(msgHelper(false, 'create post error: ' + err));
     }
 });
 
@@ -45,7 +40,7 @@ function updatePostPopularity() {
                     post_id: i
                 }
             })
-            .then((data) => {
+            .then(() => {
                 counter = 0;
                 popularityCounter = [];
             })
@@ -70,19 +65,25 @@ router.get('/post', async (req, res) => {
         return;
     } else {
         try {
-            let result = await db.getPost(req.decoded.userId, query.id);
-            if (popularityCounter[id] === undefined) {
-                popularityCounter[id] = 0;
+            let result = await req.db.getPost(req.decoded.userId, query.id);
+            
+            if(Object.keys(result).length === 0) {
+                res.send(msgHelper(true, result));
+                return;
             }
-            popularityCounter[id]++;
+            
+            if (popularityCounter[query.id] === undefined) {
+                popularityCounter[query.id] = 0;
+            }
+            popularityCounter[query.id]++;
             res.send(msgHelper(true, result));
         } catch (err) {
-            res.send(msgHelper(false, err));
+            res.send(msgHelper(false, 'get post err: ' + err));
         }
     }
 });
 
-router.delete('/post', (req, res) => {
+router.delete('/post', async (req, res) => {
     let userInfo = req.decoded;
     let postId = req.query.id;
 
@@ -96,51 +97,15 @@ router.delete('/post', (req, res) => {
         return;
     }
 
-    UserPostHistory.destroy({
-        where: {
-            user_id: userInfo.userId,
-            post_id: postId
-        }
-    })
-        .then((data) => {
-            if (data === 0) {
-                throw 'no found';
-            }
-
-            CommentHistories.destroy({
-                where: {
-                    post_id: postId
-                }
-            })
-                .then(() => {
-                    Comments.destroy({
-                        where: {
-                            post_id: postId
-                        }
-                    })
-                        .catch((err) => {
-                            console.log(err);
-                        })
-                })
-                .then(() => {
-                    deletePost(postId);
-                })
-                .catch((err) => {
-                    console.log(err);
-                });
-
-
-            return data;
-        })
-        .then((data) => {
-            res.send(msgHelper(true, data));
-        })
-        .catch((err) => {
-            res.send(msgHelper(false, err));
-        });
+    try {
+        let result = await req.db.deletePost(userInfo.userId, postId);
+        res.send(msgHelper(true, result));
+    } catch(err) {
+        res.send(msgHelper(false, 'err: ' + err));
+    }
 });
 
-router.put('/post', (req, res) => {
+router.put('/post', async (req, res) => {
     let userInfo = req.decoded;
     let query = req.body;
     let postId = query.id;
@@ -153,54 +118,17 @@ router.put('/post', (req, res) => {
         return;
     }
 
-    Posts.update(updatePostTemplate(title, content), {
-        where: {
-            post_id: postId,
-            signature: signature
-        }
-    })
-        .then((data) => {
-            if (data[0] === 0) {
-                throw 'check user id or post id'
-            }
-            res.send(msgHelper(true, ''));
-        })
-        .catch((err) => {
-            res.send(msgHelper(false, err));
-        });
+    try {
+        let result = await req.db.updatePost(postId, title, content, signature);
+        res.send(msgHelper(true, result));
+    } catch(err) {
+        res.send(msgHelper(false, err));
+    }
 });
-
-function updatePostTemplate(title, content) {
-    let toUpdate = {};
-    if (title !== undefined) {
-        toUpdate.title = validator.escape(title);
-    }
-
-    if (content !== undefined) {
-        toUpdate.content = validator.escape(content);
-    }
-    return toUpdate;
-}
-
-function deletePost(postId) {
-    Posts.destroy({
-        where: {
-            post_id: postId
-        }
-    })
-        .then((data) => {
-            if (data === 0) {
-                throw 'err'
-            }
-        })
-        .catch((err) => {
-            console.log(err)
-        });
-}
 
 router.get('/posts', async (req, res) => {
     try {
-        let result = await db.getPosts()
+        let result = await req.db.getPosts()
         res.send(result)
     } catch (err) {
         res.send(false, 'get post err: ' + err);
