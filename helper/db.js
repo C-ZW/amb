@@ -45,8 +45,8 @@ class DB {
 
         return sequelize.transaction(async (t) => {
             await _deletePostHistories(userId, postId, t);
-            await _deleteCommentHistories(postId, t);
-            await _deleteComments(postId, t);
+            await _deleteCommentHistories(null, postId, null, t);
+            await _deleteComments(null, postId, t);
             await _deletePost(postId, t);
         })
             .then(() => {
