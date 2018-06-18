@@ -1,3 +1,4 @@
+'use strict'
 const signatureSalt = require('../../config/config').signatureSalt;
 const signatureGenerator = require('../signature');
 const sequelize = require('../../models').sequelize;

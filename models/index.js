@@ -1,3 +1,4 @@
+'use strict'
 const config = require('../config/config');
 const Sequelize = require('sequelize');
 const sequelize = new Sequelize(config.db,

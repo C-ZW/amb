@@ -1,3 +1,4 @@
+'use strict'
 const Bll = require('./core/bll');
 const models = require('../models');
 const template = require('./template');

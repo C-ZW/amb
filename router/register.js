@@ -1,3 +1,4 @@
+'use strict'
 const router = require('express').Router();
 const hashing = require('../helper/hashing');
 const secret = require('../config/config').secret;

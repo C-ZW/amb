@@ -1,3 +1,4 @@
+'use strict'
 const hash = require('./hashing')
 
 function signatureGenerator(userId, id, salt) {

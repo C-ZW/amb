@@ -1,3 +1,4 @@
+'use strict'
 const validator = require('validator');
 const chai = require('chai');
 const signatureGenerator = require('./signature')

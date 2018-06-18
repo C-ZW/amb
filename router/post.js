@@ -1,3 +1,4 @@
+'use strict'
 const router = require('express').Router();
 const Posts = require('../models').Posts;
 const msgHelper = require('../helper/msgHelper');

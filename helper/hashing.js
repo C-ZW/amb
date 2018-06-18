@@ -1,3 +1,4 @@
+'use strict'
 const crypro = require('crypto');
 
 function hashing(plaintext, salt='') {

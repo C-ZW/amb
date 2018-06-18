@@ -1,7 +1,6 @@
+'use strict'
 const router = require('express').Router()
 const validator = require('validator');
-const Comments = require('../models').Comments;
-const CommentHistories = require('../models').UserCommentHistory;
 const uuidV4 = require('uuid');
 const signatureGenerator = require('../helper/signature');
 const salt = require('../config/config').commentSalt;
