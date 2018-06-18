@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const msgHelper = require('../helper/msgHelper');
-const db = require('../helper/db');
+const db = require('../helper/dbAccessor');
 const secretKey = require('../config/config').jwt_secret;
 
 router.use((req, res, next) => {

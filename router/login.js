@@ -5,7 +5,7 @@ const msgHelper = require('../helper/msgHelper');
 const jwt = require('jsonwebtoken');
 const jwtScret = require('../config/config').jwt_secret;
 const validator = require('validator');
-const db = require('../helper/db');
+const db = require('../helper/DBAccessor');
 
 function createToken(userId) {
     let payload = {

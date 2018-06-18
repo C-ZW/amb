@@ -3,7 +3,7 @@ const hashing = require('../helper/hashing');
 const secret = require('../config/config').secret;
 const msgHelper = require('../helper/msgHelper');
 const validator = require('validator');
-const db = require('../helper/db');
+const db = require('../helper/DBAccessor');
 
 router.post('/register', async (req, res) => {
     const data = req.body;

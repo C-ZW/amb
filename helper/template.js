@@ -37,8 +37,21 @@ function creatorView(post) {
     }
 }
 
+function updatePostTemplate(title, content) {
+    let toUpdate = {};
+    if (title !== undefined) {
+        toUpdate.title = validator.escape(title);
+    }
+
+    if (content !== undefined) {
+        toUpdate.content = validator.escape(content);
+    }
+    return toUpdate;
+}
+
 module.exports = {
     postTemplate,
     commonUserView,
-    creatorView
+    creatorView,
+    updatePostTemplate
 }
