@@ -36,7 +36,7 @@ class DB {
     }
 
     async deletePost(userId, postId) {
-        if (await this.isPostCreator(userId, postId)) {
+        if (!await this.isPostCreator(userId, postId)) {
             throw ' user is not the post creator';
         }
 

@@ -193,7 +193,7 @@ class DBAccess {
             transaction: t
         })
             .then(data => {
-                return data === null;
+                return data !== null;
             })
             .catch(err => {
                 throw err;
@@ -309,9 +309,6 @@ class DBAccess {
             transaction: t
         })
             .then((data) => {
-                if (data === 0) {
-                    throw 'comment history no found';
-                }
                 return data;
             })
             .catch(err => {
