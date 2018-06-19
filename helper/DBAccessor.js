@@ -4,7 +4,7 @@ const models = require('../models');
 const template = require('./template');
 const Sequelize = require('sequelize');
 const signatureSalt = require('../config/config').signatureSalt;
-const signatureGenerator = require('./signature');
+const signatureGenerator = require('./core/signature');
 const validator = require('validator');
 
 class DBAccess {

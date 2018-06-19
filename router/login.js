@@ -1,6 +1,6 @@
 'use strict'
 const router = require('express').Router();
-const hashing = require('../helper/hashing');
+const hashing = require('../helper/core/hashing');
 const secret = require('../config/config').secret;
 const msgHelper = require('../helper/msgHelper');
 const jwt = require('jsonwebtoken');

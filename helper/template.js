@@ -1,7 +1,7 @@
 'use strict'
 const validator = require('validator');
 const chai = require('chai');
-const signatureGenerator = require('./signature')
+const signatureGenerator = require('./core/signature')
 const signatureSalt = require('../config/config').signatureSalt
 
 function postTemplate(postId, post, userId) {
