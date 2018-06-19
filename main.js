@@ -14,17 +14,13 @@ const options = {
     cert: fs.readFileSync('./certificate.pem')
 };
 
+app.setMaxListeners(Infinity)
+
 app.use(cors());
 app.use(express.static(`${__dirname}/public`));
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
 app.use(router);
-app.use((err, req, res, next) => {
-    if(err !== null) {
-        return res.send({success: false, msg: 'error'})
-    }
-    next();
-})
 
 http.createServer(app).listen(HTTP_PORT, () => {
     console.log(`http server start ${HTTP_PORT}`)
