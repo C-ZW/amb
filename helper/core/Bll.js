@@ -96,7 +96,7 @@ class DB {
         let postHistories = await this.accessor.getPostHistories(userId);
         let result = {};
         result['post'] = postHistories;
-        result['commnet'] = commentHistories;
+        result['comment'] = commentHistories;
         return result;
     }
 

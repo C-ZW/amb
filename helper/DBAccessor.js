@@ -220,6 +220,22 @@ class DBAccess {
             });
     }
 
+    getPostIdByComment(commentId) {
+        return models.Comments.findOne({
+            attributes: ['post_id'],
+            where: {
+                comment_id: commentId
+            },
+            raw: true
+        })
+            .then(data => {
+                return data.post_id;
+            })
+            .catch(err => {
+                throw 'getPostIdByComment error: ' + err;
+            })
+    }
+
     getPosts() {
         return models.Posts.findAll({
             limit: 100,

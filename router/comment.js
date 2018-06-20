@@ -50,12 +50,12 @@ router.put('/comment', async (req, res) => {
     let commentId = query.id;
     let content = query.content;
 
-    if (!validator.isUUID(commentId)) {
-        res.send(msgHelper(false, 'id format error'));
-        return;
-    }
-
     try {
+        if (!validator.isUUID(commentId)) {
+            res.send(msgHelper(false, 'id format error'));
+            return;
+        }
+
         content = validator.escape(content);
         let result = await req.db.updateComment(userInfo.userId, commentId, content);
         res.send(msgHelper(true, result));
@@ -72,14 +72,14 @@ router.delete('/comment', async (req, res) => {
         return;
     }
 
-    if (!validator.isUUID(commentId)) {
-        res.send(msgHelper(false, 'id format error'));
-        return;
-    }
-
-    let userInfo = req.decoded;
-
     try {
+        if (!validator.isUUID(commentId)) {
+            res.send(msgHelper(false, 'id format error'));
+            return;
+        }
+    
+        let userInfo = req.decoded;
+
         let result = await req.db.deleteComment(commentId, userInfo.userId);
         res.send(msgHelper(true, result));
     } catch (err) {
@@ -112,12 +112,12 @@ router.get('/comment', async (req, res) => {
         return;
     }
 
-    if (!validator.isUUID(commentId, 4)) {
-        res.send(msgHelper(false, 'id format error'));
-        return;
-    }
-
     try {
+        if (!validator.isUUID(commentId, 4)) {
+            res.send(msgHelper(false, 'id format error'));
+            return;
+        }
+
         let result = await req.db.getComment(commentId);
         res.send(msgHelper(true, result));
     } catch (err) {
