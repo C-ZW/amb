@@ -31,6 +31,7 @@ router.post('/post', async (req, res) => {
 });
 
 let popularityCounter = [];
+let counter = 0;
 
 function updatePostPopularity() {
     for (let i in popularityCounter) {
@@ -67,16 +68,20 @@ router.get('/post', async (req, res) => {
     } else {
         try {
             let result = await req.db.getPost(req.decoded.userId, query.id);
-            
-            if(Object.keys(result).length === 0) {
+
+            if (Object.keys(result).length === 0) {
                 res.send(msgHelper(true, result));
                 return;
             }
-            
+
             if (popularityCounter[query.id] === undefined) {
                 popularityCounter[query.id] = 0;
             }
             popularityCounter[query.id]++;
+
+            let isCreator = await req.db.isPostCreator(req.decoded.userId, query.id);
+                result.isCreator = isCreator;
+            
             res.send(msgHelper(true, result));
         } catch (err) {
             res.send(msgHelper(false, 'get post err: ' + err));

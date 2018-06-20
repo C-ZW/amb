@@ -8,12 +8,16 @@ const msgHelper = require('../helper/msgHelper');
 
 router.get('/comments', async (req, res) => {
     let query = req.query;
-    if (!validator.isUUID(query.post_id)) {
-        res.send(msgHelper(false, 'wrong post id'));
-    }
-
     try {
+        if (!validator.isUUID(query.post_id)) {
+            res.send(msgHelper(false, 'wrong post id'));
+        }
+        
         let result = await req.db.getComments(query.post_id);
+        for (let i = 0; i < result.length; i++) {
+            let isCreator = await req.db.isCommentCreator(req.decoded.userId, query.post_id, result[i].comment_id);
+            result[i].isCreator = isCreator;
+        }
         res.send(msgHelper(true, result));
     } catch (err) {
         res.send(msgHelper(false, 'get comments error' + err));

@@ -79,6 +79,10 @@ class DB {
         return this.accessor.isPostCreator(userId, postId);
     }
 
+    isCommentCreator(userId, postId, commentId) {
+        return this.accessor.isCommentCreator(userId, postId, commentId);
+    } 
+
     updatePost(postId, title, content, signature) {
         return this.accessor.updatePost(postId, title, content, signature);
     }

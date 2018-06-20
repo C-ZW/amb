@@ -4,6 +4,7 @@ const models = require('../models');
 const template = require('./template');
 const Sequelize = require('sequelize');
 const signatureSalt = require('../config/config').signatureSalt;
+const commentSalt = require('../config/config').commentSalt;
 const signatureGenerator = require('./core/signature');
 const validator = require('validator');
 
@@ -82,7 +83,8 @@ class DBAccess {
             order: [['created_time', 'DESC']],
             where: {
                 post_id: postId
-            }
+            },
+            raw: true
         })
             .then((data) => {
                 return data;
@@ -181,6 +183,24 @@ class DBAccess {
             .catch((err) => {
                 throw 'update post error: ' + err;
             });
+    }
+
+    isCommentCreator(userId, postId, commentId, t) {
+
+        return models.Comments.findOne({
+            where: {
+                comment_id: commentId,
+                signature: signatureGenerator(userId, postId, commentSalt)
+            },
+            raw: true,
+            transaction: t
+        })
+            .then(data => {
+                return data !== null;
+            })
+            .catch(err => {
+                throw err;
+            })
     }
 
     isPostCreator(userId, postId, t) {
