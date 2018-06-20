@@ -1,5 +1,5 @@
 'use strict'
-const Bll = require('./core/bll');
+const Bll = require('./core/Bll');
 const models = require('../models');
 const template = require('./template');
 const Sequelize = require('sequelize');
