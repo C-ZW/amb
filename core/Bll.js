@@ -1,8 +1,8 @@
 'use strict'
-const signatureSalt = require('../../config/config').signatureSalt;
+const signatureSalt = require('../config/config').signatureSalt;
 const signatureGenerator = require('./signature');
-const sequelize = require('../../models').sequelize;
-const commentSalt = require('../../config/config').commentSalt;
+const sequelize = require('../models').sequelize;
+const commentSalt = require('../config/config').commentSalt;
 
 class DB {
     constructor(accessor) {

@@ -1,11 +1,11 @@
 'use strict'
-const Bll = require('./core/Bll');
+const Bll = require('../core/Bll');
 const models = require('../models');
 const template = require('./template');
 const Sequelize = require('sequelize');
 const signatureSalt = require('../config/config').signatureSalt;
 const commentSalt = require('../config/config').commentSalt;
-const signatureGenerator = require('./core/signature');
+const signatureGenerator = require('../core/signature');
 const validator = require('validator');
 
 class DBAccess {

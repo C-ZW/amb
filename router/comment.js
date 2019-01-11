@@ -2,7 +2,7 @@
 const router = require('express').Router()
 const validator = require('validator');
 const uuidV4 = require('uuid');
-const signatureGenerator = require('../helper/core/signature');
+const signatureGenerator = require('../core/signature');
 const salt = require('../config/config').commentSalt;
 const msgHelper = require('../helper/msgHelper');
 

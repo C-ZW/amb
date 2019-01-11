@@ -5,7 +5,7 @@ const msgHelper = require('../helper/msgHelper');
 const Sequelize = require('sequelize');
 const uuidV4 = require('uuid');
 const validator = require('validator');
-const signatureGenerator = require('../helper/core/signature');
+const signatureGenerator = require('../core/signature');
 const signatureSalt = require('../config/config').signatureSalt;
 
 router.post('/post', async (req, res) => {
