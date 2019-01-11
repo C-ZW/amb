@@ -1,7 +1,8 @@
+'use strict'
 const router = require('express').Router();
 const jwt = require('jsonwebtoken');
 const msgHelper = require('../helper/msgHelper');
-
+const db = require('../helper/DBAccessor');
 const secretKey = require('../config/config').jwt_secret;
 
 router.use((req, res, next) => {
@@ -15,6 +16,7 @@ router.use((req, res, next) => {
                 return res.send(msgHelper(false, 'Failed to authenticate token.'));
             } else {
                 req.decoded = decoded;
+                req.db = db;
                 next();
             }
         });

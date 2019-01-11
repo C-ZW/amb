@@ -1,12 +1,12 @@
-const router = require('express').Router()
-const Sequelize = require('sequelize');
-const Users = require('../models').Users;
-const hashing = require('../helper/hashing');
+'use strict'
+const router = require('express').Router();
+const hashing = require('../core/hashing');
 const secret = require('../config/config').secret;
 const msgHelper = require('../helper/msgHelper');
 const jwt = require('jsonwebtoken');
 const jwtScret = require('../config/config').jwt_secret;
 const validator = require('validator');
+const db = require('../helper/DBAccessor');
 
 function createToken(userId) {
     let payload = {
@@ -20,29 +20,21 @@ function createToken(userId) {
     return token;
 }
 
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
     const data = req.body;
-    console.log(data)
-    Users.findOne({
-        where: {
-            account: validator.escape(data.account),
-            password: hashing(data.password, secret)
-        },
-        raw: true
+    const account = validator.escape(data.account);
+    const password = hashing(data.password, secret);
+    console.log(req.body)
+    try{
+        let userId = await db.login(account, password);
+        if(userId !== null) {
+            res.send(msgHelper(true, createToken(userId)));
+        } else {
+            res.send(msgHelper(false, 'password or account error'));
+        }
+    } catch(err) {
+        res.send(msgHelper(false, 'login error: ' + err));
     }
-        )
-        .then((data) => {
-            if(data !== null) {
-                res.send(msgHelper(true, createToken(data.user_id)));
-
-            } else {
-                res.send(msgHelper(false, 'password error'));
-            }
-        })
-        .catch((err) => {
-            console.log(err)
-            res.send(msgHelper(false, err));
-        });
 });
 
 module.exports = router;
