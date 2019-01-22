@@ -1,8 +1,8 @@
 # 匿名留言板
 ---
 
+![](https://i.imgur.com/hy5KIoR.jpg)
 
-![](https://i.imgur.com/Zh0wx3e.png)
 
 有使用到的 table 有 5 個，分別是
 1. users -> 記錄 user 的帳號密碼
@@ -12,7 +12,6 @@
 5. comments -> 紀錄所有的 comments
 
 
-**preference_types 尚未實作**
 
 
 ---
